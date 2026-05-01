@@ -1,0 +1,7 @@
+-- 코드를 작성해주세요
+SELECT ITEM_ID,ITEM_NAME,RARITY
+FROM ITEM_INFO 
+WHERE ITEM_ID NOT IN (SELECT distinct(IT.PARENT_ITEM_ID)
+              FROM ITEM_TREE IT
+              WHERE IT.PARENT_ITEM_ID is not null)
+order by ITEM_ID desc;
