@@ -1,27 +1,45 @@
+import java.util.*;
 class Solution {
     public int solution(int[] stones, int k) {
-        int lo = 1, hi = 200000000, ans = 0;
-        while (lo <= hi) {
-            int mid = (lo+hi)/2;
-            if (canCross(stones, k, mid)) {
-                ans = mid;
-                lo = mid + 1;
-            } else {
-                hi = mid - 1;
+        
+        int left = 0;
+        int right = 200000000;
+        
+        while(left<=right){
+            int mid = (left + right) / 2;
+            
+            if(isProper(stones, mid, k)){
+                left = mid + 1;
+            }
+            else{
+               right = mid - 1;
             }
         }
-        return ans;
+        
+        return left-1;
+        
     }
-
-    private boolean canCross(int[] stones, int k, int people) {
-        int cnt = 0;
-        for (int s : stones) {
-            if (s < people) {
-                if (++cnt >= k) return false;   // 연속 k개 → 못 건넘
-            } else {
-                cnt = 0;
+    
+    public boolean isProper(int []stones, int distance, int k){
+        
+        int maxLength = 0;
+        int seq = 0;
+        for(int i=0;i<stones.length;i++){
+            
+            if(stones[i]-distance<0){
+                seq++;
+                maxLength = Math.max(maxLength, seq);
+                continue;
+            }
+            else{
+                seq = 0;
             }
         }
+        
+        if(maxLength>=k){
+            return false;
+        }
+        
         return true;
     }
 }
