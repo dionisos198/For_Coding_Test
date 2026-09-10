@@ -1,34 +1,34 @@
 import java.util.*;
 class Solution {
-    Set<String> set = new HashSet<>();
     public int[] solution(int n, String[] words) {
         
-        int seq = 2;
-        set.add(words[0]);
-        for(int i=1;i<words.length;i++){
-            if(out(words[i-1],words[i])){
-                int number = seq % n;
-                int cha = seq/n+1;
-                if(number ==0){
-                    number = n;
-                    cha = seq/n;
-                }
-                return new int[]{number, cha};
-                
+        Set<String> set = new HashSet<>();
+        String beforeWord = "";
+        
+        int number = 0;
+        for(int i=0;i<words.length;i++){
+            number++;
+            if(set.contains(words[i]) || 
+               (i!=0 &&beforeWord.charAt(beforeWord.length()-1)!= words[i].charAt(0))){
+                break;
             }
             set.add(words[i]);
-            seq++;
+            beforeWord = words[i];
         }
         
-        return new int[]{0,0};
-    }
-    
-    public boolean out(String before, String after){
-        if(before.charAt(before.length()-1) != after.charAt(0) || 
-           set.contains(after)){
-            return true;
+        if(set.size()==words.length){
+            return new int[]{0,0};
         }
         
-        return false;
+        int first = number % n==0?n:number%n;
+        int second = number % n ==0? number/n: (number/n) + 1;
+        
+   //     System.out.println(first+" "+second);
+        
+        return new int[]{first,second};
+        
+        
+        
+        
     }
 }
