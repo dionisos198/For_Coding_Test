@@ -2,33 +2,48 @@ import java.util.*;
 class Solution {
     int answer = Integer.MAX_VALUE;
     public int solution(int[][] cost, int[][] hint) {
-   
-        BT(0, cost, hint, 0, new int[cost.length]);
+        
+        Map<Integer, Integer> map = new HashMap<>();
+        for(int i=0;i<cost.length;i++){
+            map.put(i,0);
+        }
+        
+        BT(0, cost, hint, map, 0);
         
         return answer;
     }
     
-    public void BT(int stage, int [][]cost, int [][]hint, int costPrice,int count[]){
+    public void BT(int currentStage, int [][]cost, int [][]hint, 
+                   Map<Integer, Integer> map, int sum){
         
-        int usedHints = Math.min(count[stage], cost[stage].length - 1);
-        costPrice += cost[stage][usedHints];
-        
-        if(stage == cost.length-1){
-            answer = Math.min(answer, costPrice);
+        if(currentStage == cost.length){
+            
+            answer = Math.min(sum, answer);
             return;
         }
         
-        // 힌트 번들 구매
-        for(int i=1;i<hint[stage].length;i++){
-            count[hint[stage][i]-1]++;
-        }
-        BT(stage+1,cost,hint, costPrice+hint[stage][0],count);
+        int idx = Math.min(map.get(currentStage), cost[currentStage].length - 1);
+        int price = cost[currentStage][idx];
+        // 힌트권 구매 
         
-        for(int i=1;i<hint[stage].length;i++){
-            count[hint[stage][i]-1]--;
+        if(currentStage<hint.length){
+            int hintPrice = hint[currentStage][0];
+            for(int i=1;i<hint[currentStage].length;i++){
+              map.put(hint[currentStage][i]-1,map.get(hint[currentStage][i]-1)+1);
+            }
+            
+            BT(currentStage+1,cost,hint, map, sum + price + hintPrice);
+            
+            for(int i=1;i<hint[currentStage].length;i++){
+              map.put(hint[currentStage][i]-1,map.get(hint[currentStage][i]-1)-1);
+            }  
+            
         }
         
-        // 힌트번들 구매 X
-        BT(stage+1,cost, hint, costPrice,count);
+        
+        BT(currentStage+1, cost, hint, map, sum + price);
+        
+        
+        
     }
 }
