@@ -2,32 +2,26 @@ import java.util.*;
 class Solution {
     public int solution(int[] players, int m, int k) {
         
-        int currentServerCount = 0;
-        int reservedDelete[] = new int[25];
-        Arrays.fill(reservedDelete,0);
-        int answer = 0;
+        int increaseCount = 0;
+        int increasedServer = 0;
+        Map<Integer, Integer> removeServerCount = new HashMap<>();
         
-        for(int i=0;i<players.length;i++){
+        for(int i = 0; i < players.length; i++){
+            int player = players[i];
             
-            
-            currentServerCount -= reservedDelete[i];
-            int needServerCount = players[i] / m;
-          //  System.out.println("필요 서버 수: "+ needServerCount);
-            
-            if(needServerCount > currentServerCount){
-                
-                int needCount = needServerCount - currentServerCount;
-                if(i+k<=24){
-                    reservedDelete[i+k] += needCount;
-                }
-                answer += needCount;
-                currentServerCount = needServerCount;
+            if(removeServerCount.containsKey(i)){
+                increasedServer -= removeServerCount.get(i);
             }
-        
-         //   System.out.println("현재 서버 수: "+currentServerCount);
+            
+            int needServerCount = player / m;
+            if(increasedServer < needServerCount){
+                increaseCount += needServerCount - increasedServer;
+                removeServerCount.put(i+k, needServerCount - increasedServer);
+                increasedServer = needServerCount;
+            }
             
         }
         
-        return answer;
+        return increaseCount;
     }
 }
